@@ -5,6 +5,7 @@ import HeroSection from './components/HeroSection';
 import WhyChooseUs from "./components/WhyChooseUs";
 import Footer from './components/Footer';
 import AboutSection from './components/AboutSection';
+import MedicalAssistanceCTA from './components/MedicalAssistanceCTA';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <HeroSection />
       <WhyChooseUs />
       <AboutSection />
+      <MedicalAssistanceCTA />
       <Footer />
 
     </div>

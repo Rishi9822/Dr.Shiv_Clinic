@@ -64,7 +64,7 @@ const AboutSection = () => {
                 {/* Mission */}
                 <div>
                     <h4 className="font-semibold mb-1">Our Mission</h4>
-                    <p className="text-gray-700 text-xs md:text-xl">
+                    <p className="text-gray-700 text-xs md:text-2xl">
                         "To provide accessible, compassionate, and comprehensive healthcare to every family, ensuring that quality medical care is never beyond reach."
                     </p>
                 </div>
