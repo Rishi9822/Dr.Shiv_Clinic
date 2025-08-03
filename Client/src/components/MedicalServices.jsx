@@ -44,7 +44,7 @@ const services = [
 
 const MedicalServices = () => {
   return (
-    <section className="py-20 px-4 sm:px-8 lg:px-24 bg-white">
+    <section id= "services" className="py-20 px-4 sm:px-8 lg:px-24 bg-white">
       <div className="text-center max-w-4xl mx-auto mb-12">
         {/* Top badge */}
         <span className="inline-block bg-[#e0f7f9] text-[#0086c3] text-sm font-semibold px-4 py-1 rounded-full mb-4">
