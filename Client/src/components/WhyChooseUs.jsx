@@ -35,7 +35,7 @@ const features = [
 
 const WhyChooseUs = () => {
   return (
-    <section className="bg-[#F5FDFF] py-20 px-4 md:px-12 lg:px-24 text-center">
+    <section className="bg-[#F5FDFF] py-10 px-4 md:px-12 lg:px-24 text-center">
       <div className="max-w-4xl mx-auto">
         {/* Section Tagline */}
         <motion.div
