@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import CallToAction from './components/CallToAction';
 import AboutSection from './components/AboutSection';
 import MedicalAssistanceCTA from './components/MedicalAssistanceCTA';
+import QualityCareSection from './components/QualityCareSection';
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
       <WhyChooseUs />
       <CallToAction />
       <AboutSection />
-
+<QualityCareSection />
       <MedicalAssistanceCTA />
 
 
