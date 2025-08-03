@@ -6,6 +6,7 @@ import WhyChooseUs from "./components/WhyChooseUs";
 import Footer from './components/Footer';
 import CallToAction from './components/CallToAction';
 import AboutSection from './components/AboutSection';
+import MedicalServices from './components/MedicalServices';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <WhyChooseUs />
       <CallToAction />
       <AboutSection />
+      <MedicalServices />
 
       <Footer />
 

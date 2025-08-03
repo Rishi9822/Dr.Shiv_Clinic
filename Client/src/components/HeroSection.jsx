@@ -2,6 +2,8 @@ import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Calendar, PhoneCall, MapPin, Clock } from "lucide-react";
 import CountUp from "react-countup";
+import doctorImage from '../assets/doctor.jpg';
+
 
 const stats = [
   { end: 10, suffix: "+", label: "Years Experience" },
@@ -74,7 +76,7 @@ const HeroSection = () => {
         >
           <div className="bg-[#047799] p-4 rounded-2xl text-center w-full max-w-sm transition duration-300 hover:shadow-2xl hover:scale-105">
             <img
-              src="/doctor.jpg"
+              src={doctorImage}
               alt="Dr. Shivkumar Patel"
               className="w-full h-64 object-cover rounded-xl mb-4"
               loading="lazy"
