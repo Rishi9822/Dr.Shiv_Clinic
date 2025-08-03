@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'; // Ensure this is imported
 import HeroSection from './components/HeroSection';
 import WhyChooseUs from "./components/WhyChooseUs";
 import Footer from './components/Footer';
+import CallToAction from './components/CallToAction';
 import AboutSection from './components/AboutSection';
 import MedicalAssistanceCTA from './components/MedicalAssistanceCTA';
 
@@ -14,8 +15,13 @@ function App() {
       <Navbar />
       <HeroSection />
       <WhyChooseUs />
+      <CallToAction />
       <AboutSection />
+
       <MedicalAssistanceCTA />
+
+
+
       <Footer />
 
     </div>
