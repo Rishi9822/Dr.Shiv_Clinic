@@ -40,7 +40,7 @@ const Navbar = () => {
 
                 {/* Center - Navigation (hidden on small) */}
                 <nav className="hidden md:flex space-x-4 lg:space-x-9">
-                    <a href="#home" className="text-gray-800 hover:text-blue-600 font-medium text-sm lg:text-base">Home</a>
+                    <a href="/" className="text-gray-800 hover:text-blue-600 font-medium text-sm lg:text-base">Home</a>
                     <a href="#about" className="text-gray-800 hover:text-blue-600 font-medium text-sm lg:text-base">About</a>
                     <a href="#services" className="text-gray-800 hover:text-blue-600 font-medium text-sm lg:text-base">Services</a>
                     <a href="#appointment" className="text-gray-800 hover:text-blue-600 font-medium text-sm lg:text-base">Book Appointment</a>
