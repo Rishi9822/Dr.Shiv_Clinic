@@ -6,6 +6,7 @@ import WhyChooseUs from "./components/WhyChooseUs";
 import Footer from './components/Footer';
 import CallToAction from './components/CallToAction';
 import AboutSection from './components/AboutSection';
+import MedicalServices from './components/MedicalServices';
 import MedicalAssistanceCTA from './components/MedicalAssistanceCTA';
 import QualityCareSection from './components/QualityCareSection';
 import BookAppointmentSection from './components/BookAppointmentSection';
@@ -19,11 +20,10 @@ function App() {
       <WhyChooseUs />
       <CallToAction />
       <AboutSection />
+      <MedicalServices />
 <QualityCareSection />
       <MedicalAssistanceCTA />
       <BookAppointmentSection />
-
-
 
       <Footer />
 
