@@ -43,7 +43,7 @@ const Navbar = () => {
                     <a href="/" className="text-gray-800 hover:text-blue-600 font-medium text-sm lg:text-base">Home</a>
                     <a href="#about" className="text-gray-800 hover:text-blue-600 font-medium text-sm lg:text-base">About</a>
                     <a href="#services" className="text-gray-800 hover:text-blue-600 font-medium text-sm lg:text-base">Services</a>
-                    <a href="#appointment" className="text-gray-800 hover:text-blue-600 font-medium text-sm lg:text-base">Book Appointment</a>
+                    <a href="#book" className="text-gray-800 hover:text-blue-600 font-medium text-sm lg:text-base">Book Appointment</a>
                 </nav>
 
                 {/* Right - Call Now & Hamburger */}

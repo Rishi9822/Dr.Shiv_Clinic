@@ -17,7 +17,7 @@ const BookAppointmentSection = () => {
   };
 
   return (
-    <section className="py-14 md:py-20 bg-[#f5fafc]">
+    <section id= "book"className="py-14 md:py-20 bg-[#f5fafc]">
       <div className="max-w-7xl mx-auto px-4">
 
         {/* Top heading */}

@@ -3,7 +3,7 @@ import { Award, Users, CheckCircle, Shield } from 'lucide-react';
 
 const AboutSection = () => {
     return (
-        <section className="max-w-7xl mx-auto px-4 py-10 grid md:grid-cols-2 gap-8 items-start">
+        <section id="about" className="max-w-7xl mx-auto px-4 py-10 grid md:grid-cols-2 gap-8 items-start">
 
             {/* Left: About Text & Highlights */}
             <div>
