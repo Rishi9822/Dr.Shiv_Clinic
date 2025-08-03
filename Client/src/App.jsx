@@ -8,6 +8,7 @@ import CallToAction from './components/CallToAction';
 import AboutSection from './components/AboutSection';
 import MedicalAssistanceCTA from './components/MedicalAssistanceCTA';
 import QualityCareSection from './components/QualityCareSection';
+import BookAppointmentSection from './components/BookAppointmentSection';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <AboutSection />
 <QualityCareSection />
       <MedicalAssistanceCTA />
+      <BookAppointmentSection />
 
 
 
