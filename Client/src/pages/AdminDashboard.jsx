@@ -1,10 +1,12 @@
 // src/pages/AdminDashboard.jsx
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 import AdminPanel from "../components/AdminPanel";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -21,10 +23,18 @@ const AdminDashboard = () => {
             🏥 Dr. Shiv Clinic Admin
           </h1>
 
-          {/* Logout button */}
+          {/* Mobile menu button */}
+          <button
+            className="md:hidden p-2 text-gray-700"
+            onClick={() => setIsSidebarOpen(true)}
+          >
+            <Menu size={28} />
+          </button>
+
+          {/* Logout button (hidden on small screens, shown on md+) */}
           <button
             onClick={handleLogout}
-            className="bg-red-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-red-700 transition"
+            className="hidden md:block bg-red-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-red-700 transition"
           >
             Logout
           </button>
@@ -33,27 +43,52 @@ const AdminDashboard = () => {
 
       {/* 🔹 Page Layout */}
       <div className="flex flex-1 pt-20">
-        {/* Sidebar (future expandable) */}
-        <aside className="w-64 bg-white shadow-md hidden md:block">
+        {/* Sidebar */}
+        <aside
+          className={`fixed md:static top-0 left-0 h-full w-64 bg-white shadow-md transform transition-transform duration-300 z-40 ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          }`}
+        >
+          <div className="flex items-center justify-between p-4 border-b md:hidden">
+            <h2 className="text-lg font-semibold text-gray-800">Menu</h2>
+            <button
+              className="p-2 text-gray-700"
+              onClick={() => setIsSidebarOpen(false)}
+            >
+              <X size={24} />
+            </button>
+          </div>
+
           <nav className="flex flex-col p-6 space-y-4">
             <a
-              href="#"
+              href="#appointments"
               className="text-gray-700 hover:text-green-700 font-medium transition"
+              onClick={() => setIsSidebarOpen(false)}
             >
               📅 Appointments
             </a>
             <a
               href="#patients"
               className="text-gray-700 hover:text-green-700 font-medium transition"
+              onClick={() => setIsSidebarOpen(false)}
             >
               👥 Patients
             </a>
             <a
               href="#settings"
               className="text-gray-700 hover:text-green-700 font-medium transition"
+              onClick={() => setIsSidebarOpen(false)}
             >
               ⚙️ Settings
             </a>
+
+            {/* Logout button for mobile */}
+            <button
+              onClick={handleLogout}
+              className="md:hidden w-full mt-6 bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700 transition"
+            >
+              Logout
+            </button>
           </nav>
         </aside>
 

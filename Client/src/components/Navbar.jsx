@@ -82,7 +82,7 @@ const Navbar = () => {
             px-4 pb-3 animate-slideDown
           "
                 >
-                    <a href="#home" onClick={() => setIsOpen(false)} className="text-gray-800 hover:text-blue-600 font-medium text-sm transition duration-300">Home</a>
+                    <a href="/" onClick={() => setIsOpen(false)} className="text-gray-800 hover:text-blue-600 font-medium text-sm transition duration-300">Home</a>
                     <a href="#about" onClick={() => setIsOpen(false)} className="text-gray-800 hover:text-blue-600 font-medium text-sm transition duration-300">About</a>
                     <a href="#services" onClick={() => setIsOpen(false)} className="text-gray-800 hover:text-blue-600 font-medium text-sm transition duration-300">Services</a>
                     <a href="#book" onClick={() => setIsOpen(false)} className="text-gray-800 hover:text-blue-600 font-medium text-sm transition duration-300">Book Appointment</a>
