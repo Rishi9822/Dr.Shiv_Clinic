@@ -12,7 +12,7 @@ export const createAppointment = async (req, res) => {
   try {
     console.log("📥 Incoming request body:", req.body);
 
-    let { name, email, phone, date, reason, notes } = req.body || {};
+    let { name, email, phone, date, timeSlot, reason, notes } = req.body || {};
 
     // Normalize/trim
     name = (name || "").trim();
@@ -22,16 +22,16 @@ export const createAppointment = async (req, res) => {
     notes = (notes || "").trim();
 
     // Validate required fields
-    if (!name || !email || !phone || !date || !reason) {
+    if (!name || !phone || !date || !timeSlot || !reason) {
       return res.status(400).json({
         success: false,
         message:
-          "All required fields (name, email, phone, date, reason) must be provided",
+          "All required fields (name, phone, date, reason) must be provided",
       });
     }
 
     // Field-specific validation
-    if (!isValidEmail(email)) {
+    if (email && !isValidEmail(email)) {
       return res.status(400).json({
         success: false,
         message: "Please provide a valid email address",
@@ -60,6 +60,7 @@ export const createAppointment = async (req, res) => {
       email,
       phone,
       date: dateObj,      // store as Date
+      timeSlot,
       reason,
       notes,
     });

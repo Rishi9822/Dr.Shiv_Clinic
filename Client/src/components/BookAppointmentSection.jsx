@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react"; // ⬅ add useRef
 import { useForm } from "react-hook-form";
 import {
   CalendarDays,
@@ -7,6 +7,7 @@ import {
   ClipboardList,
   CheckCircle,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const BookAppointmentSection = () => {
   const {
@@ -14,6 +15,7 @@ const BookAppointmentSection = () => {
     handleSubmit,
     reset,
     formState: { errors },
+    watch,
   } = useForm();
 
   const [status, setStatus] = useState({ type: "", message: "" });
@@ -21,24 +23,83 @@ const BookAppointmentSection = () => {
 
   const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
+
+  const dateInputRef = useRef(null);
+
+  const openDatePicker = () => {
+    if (dateInputRef.current?.showPicker) {
+      dateInputRef.current.showPicker(); // modern browsers
+    } else {
+      dateInputRef.current?.focus(); // fallback
+    }
+  };
+  const timeSlotRef = useRef(null);
+
+  const openTimeSlot = () => {
+    if (timeSlotRef.current) {
+      // Modern browsers support showPicker
+      if (timeSlotRef.current.showPicker) {
+        timeSlotRef.current.showPicker();
+      } else {
+        timeSlotRef.current.focus();
+        // Fallback: simulate a keyboard interaction
+        const event = new MouseEvent("mousedown", { bubbles: true, cancelable: true });
+        timeSlotRef.current.dispatchEvent(event);
+      }
+    }
+  };
+
+const slots = [
+  "09:00 AM - 12:00 PM",
+  "12:00 PM - 03:00 PM",
+  "03:00 PM - 06:00 PM",
+  "06:00 PM - 09:00 PM",
+];
+
+const getSlotsWithAvailability = (selectedDate) => {
+  const now = new Date();
+  const selected = new Date(selectedDate);
+
+  return slots.map((slot) => {
+    let disabled = false;
+
+    if (selected.toDateString() === now.toDateString()) {
+      const currentHour = now.getHours();
+
+      if (slot === "09:00 AM - 12:00 PM" && currentHour >= 12) disabled = true;
+      if (slot === "12:00 PM - 03:00 PM" && currentHour >= 15) disabled = true;
+      if (slot === "03:00 PM - 06:00 PM" && currentHour >= 18) disabled = true;
+      if (slot === "06:00 PM - 09:00 PM" && currentHour >= 21) disabled = true;
+    }
+
+    return { slot, disabled };
+  });
+};
+
+  // Auto-clear success message after 4s
+  useEffect(() => {
+    if (status.type === "success") {
+      const timer = setTimeout(() => {
+        setStatus({ type: "", message: "" });
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
+
   const onSubmit = async (data) => {
     try {
       setStatus({ type: "", message: "" });
       setLoading(true);
 
-      console.log("📤 Raw form data before formatting:", data);
-
       const formattedData = {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        // IMPORTANT: send the plain YYYY-MM-DD string
         date: data.date,
+        timeSlot: data.timeSlot,
         reason: data.reason,
         notes: data.notes || "",
       };
-
-      console.log("📤 Sending to server:", formattedData);
 
       const res = await fetch("http://localhost:5000/api/appointments", {
         method: "POST",
@@ -46,18 +107,16 @@ const BookAppointmentSection = () => {
         body: JSON.stringify(formattedData),
       });
 
-      // If server returns non-JSON (rare), avoid crashing the UI:
       let result = {};
       try {
         result = await res.json();
-      } catch (_) {
-        // ignore JSON parse error; keep default {}
-      }
-
-      console.log("✅ Server response:", result);
+      } catch (_) { }
 
       if (res.ok && result?.success) {
-        setStatus({ type: "success", message: "Appointment booked successfully ✅" });
+        setStatus({
+          type: "success",
+          message: "Appointment booked successfully ✅  We will contact you shortly.",
+        });
         reset();
       } else {
         setStatus({
@@ -76,13 +135,24 @@ const BookAppointmentSection = () => {
   return (
     <section id="book" className="py-14 md:py-20 bg-[#f5fafc]">
       <div className="max-w-7xl mx-auto px-4">
+        {/* Heading */}
         <div className="text-center mb-10">
-          <button className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm mb-3 hover:bg-blue-200 transition">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm mb-3 hover:bg-blue-200 transition"
+          >
             <ClipboardList size={16} /> Schedule Consultation
-          </button>
-          <h2 className="text-2xl md:text-4xl font-bold mb-3">
+          </motion.button>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-2xl md:text-4xl font-bold mb-3"
+          >
             Book Your <span className="text-blue-600">Appointment</span>
-          </h2>
+          </motion.h2>
           <p className="text-gray-600 text-sm md:text-base max-w-2xl mx-auto">
             Take the first step towards better health. Schedule your consultation
             with Dr. Shivkumar Patel and receive personalized medical care.
@@ -90,7 +160,14 @@ const BookAppointmentSection = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white rounded-2xl shadow-lg p-8 md:col-span-1 hover:shadow-xl transition duration-300">
+          {/* Form Section */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="bg-white rounded-2xl shadow-lg p-8 md:col-span-1 hover:shadow-xl transition duration-300"
+          >
             <h3 className="font-semibold text-xl md:text-2xl mb-2">
               Book an <span className="text-blue-600">Appointment</span>
             </h3>
@@ -100,11 +177,13 @@ const BookAppointmentSection = () => {
             </p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              {/* Name */}
               <div>
                 <input
                   type="text"
                   placeholder="Enter your full name"
                   {...register("name", { required: true, minLength: 2 })}
+                  aria-invalid={errors.name ? "true" : "false"}
                   className="w-full border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-blue-500 outline-none transition"
                 />
                 {errors.name && (
@@ -114,23 +193,28 @@ const BookAppointmentSection = () => {
                 )}
               </div>
 
+              {/* Email */}
               <div>
                 <input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="Enter your email (optional)"
                   {...register("email", {
-                    required: true,
-                    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    validate: (value) =>
+                      !value ||
+                      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
+                      "Please enter a valid email",
                   })}
+                  aria-invalid={errors.email ? "true" : "false"}
                   className="w-full border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-blue-500 outline-none transition"
                 />
                 {errors.email && (
                   <p className="text-red-500 text-xs mt-1">
-                    Please enter a valid email
+                    {errors.email.message}
                   </p>
                 )}
               </div>
 
+              {/* Phone */}
               <div>
                 <input
                   type="tel"
@@ -139,6 +223,7 @@ const BookAppointmentSection = () => {
                     required: true,
                     pattern: /^[0-9]{10}$/,
                   })}
+                  aria-invalid={errors.phone ? "true" : "false"}
                   className="w-full border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-blue-500 outline-none transition"
                 />
                 {errors.phone && (
@@ -148,24 +233,60 @@ const BookAppointmentSection = () => {
                 )}
               </div>
 
-              <div className="relative">
-                <input
-                  type="date"
-                  min={today}
-                  {...register("date", { required: true })}
-                  className="w-full border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-blue-500 outline-none transition"
-                />
-                <CalendarDays size={20} className="absolute right-3 top-3 text-gray-400" />
-                {errors.date && (
-                  <p className="text-red-500 text-xs mt-1">
-                    Please select a valid date
-                  </p>
-                )}
+              {/* Date + Time Slot */}
+              <div className="flex flex-col md:flex-row md:space-x-4 gap-4">
+                {/* Date Picker */}
+                <div className="flex-1 relative">
+                  <input
+                    type="date"
+                    min={today}
+                    {...register("date", { required: true })}
+                    aria-invalid={errors.date ? "true" : "false"}
+                    ref={dateInputRef}
+                    className="w-full border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-blue-500 outline-none transition"
+                  />
+                  <CalendarDays
+                    size={20}
+                    className="absolute right-3 top-3 text-gray-400 cursor-pointer"
+                    onClick={openDatePicker}
+                  />
+                  {errors.date && (
+                    <p className="text-red-500 text-xs mt-1">Please select a valid date</p>
+                  )}
+                </div>
+
+                {/* Time Slot Dropdown */}
+                <div className="flex-1 relative">
+                  <select
+                    {...register("timeSlot", { required: true })}
+                    ref={timeSlotRef}
+                    className="w-full border rounded-lg px-4 py-3 text-base appearance-none focus:ring-2 focus:ring-blue-500 outline-none transition"
+                  >
+                    <option value="">Select a time slot</option>
+                    {getSlotsWithAvailability(watch("date")).map(({ slot, disabled }) => (
+                      <option key={slot} value={slot} disabled={disabled}>
+                        {slot} {disabled ? "(Unavailable)" : ""}
+                      </option>
+                    ))}
+                  </select>
+
+                  <ChevronDown
+                    size={20}
+                    className="absolute right-3 top-3 text-gray-400 cursor-pointer"
+                    onClick={openTimeSlot}
+                  />
+                  {errors.timeSlot && (
+                    <p className="text-red-500 text-xs mt-1">Please select a time slot</p>
+                  )}
+                </div>
+
               </div>
 
+              {/* Reason */}
               <div className="relative">
                 <select
                   {...register("reason", { required: true })}
+                  aria-invalid={errors.reason ? "true" : "false"}
                   className="w-full border rounded-lg px-4 py-3 text-base appearance-none focus:ring-2 focus:ring-blue-500 outline-none transition"
                 >
                   <option value="">Select reason for visit</option>
@@ -181,6 +302,7 @@ const BookAppointmentSection = () => {
                 )}
               </div>
 
+              {/* Notes */}
               <textarea
                 rows="3"
                 placeholder="Any specific symptoms or concerns..."
@@ -188,27 +310,44 @@ const BookAppointmentSection = () => {
                 className="w-full border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-blue-500 outline-none transition resize-none"
               ></textarea>
 
-              <button
+              {/* Submit */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full py-3 font-semibold text-base transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full py-3 font-semibold text-base transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Booking..." : "BOOK NOW"}
-              </button>
+              </motion.button>
             </form>
 
-            {status.message && (
-              <p
-                className={`mt-4 text-sm ${
-                  status.type === "success" ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {status.message}
-              </p>
-            )}
-          </div>
+            {/* Success/Error Message */}
+            <AnimatePresence>
+              {status.message && (
+                <motion.p
+                  key={status.message}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.4 }}
+                  className={`mt-4 text-sm ${status.type === "success" ? "text-green-600" : "text-red-600"
+                    }`}
+                >
+                  {status.message}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </motion.div>
 
-          <div className="md:col-span-2 flex flex-col gap-6">
+          {/* Info Section */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="md:col-span-2 flex flex-col gap-6"
+          >
             <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition duration-300">
               <h3 className="font-semibold text-lg md:text-xl mb-3 flex items-center gap-2">
                 <CalendarDays size={20} className="text-blue-600" /> Clinic Hours
@@ -240,14 +379,21 @@ const BookAppointmentSection = () => {
                   "Insurance claims assistance",
                   "Patient-centered approach",
                 ].map((item, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
+                  <motion.li
+                    key={idx}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: idx * 0.1 }}
+                    className="flex items-center gap-2"
+                  >
                     <CheckCircle className="text-blue-600" size={18} />
                     <span className="text-base">{item}</span>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
