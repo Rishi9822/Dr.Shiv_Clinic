@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"; // ⬅ add useRef
+import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import {
   CalendarDays,
@@ -16,6 +16,7 @@ const BookAppointmentSection = () => {
     reset,
     formState: { errors },
     watch,
+    setValue,
   } = useForm();
 
   const [status, setStatus] = useState({ type: "", message: "" });
@@ -23,58 +24,52 @@ const BookAppointmentSection = () => {
 
   const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
-
+  // Refs for manual open
   const dateInputRef = useRef(null);
+  const timeSlotRef = useRef(null);
 
   const openDatePicker = () => {
     if (dateInputRef.current?.showPicker) {
-      dateInputRef.current.showPicker(); // modern browsers
+      dateInputRef.current.showPicker();
     } else {
-      dateInputRef.current?.focus(); // fallback
+      dateInputRef.current?.focus();
     }
   };
-  const timeSlotRef = useRef(null);
 
   const openTimeSlot = () => {
     if (timeSlotRef.current) {
-      // Modern browsers support showPicker
-      if (timeSlotRef.current.showPicker) {
-        timeSlotRef.current.showPicker();
-      } else {
-        timeSlotRef.current.focus();
-        // Fallback: simulate a keyboard interaction
-        const event = new MouseEvent("mousedown", { bubbles: true, cancelable: true });
-        timeSlotRef.current.dispatchEvent(event);
-      }
+      timeSlotRef.current.focus();
+      const event = new MouseEvent("mousedown", { bubbles: true });
+      timeSlotRef.current.dispatchEvent(event);
     }
   };
 
-const slots = [
-  "09:00 AM - 12:00 PM",
-  "12:00 PM - 03:00 PM",
-  "03:00 PM - 06:00 PM",
-  "06:00 PM - 09:00 PM",
-];
+  const slots = [
+    "09:00 AM - 12:00 PM",
+    "12:00 PM - 03:00 PM",
+    "03:00 PM - 06:00 PM",
+    "06:00 PM - 09:00 PM",
+  ];
 
-const getSlotsWithAvailability = (selectedDate) => {
-  const now = new Date();
-  const selected = new Date(selectedDate);
+  const getSlotsWithAvailability = (selectedDate) => {
+    const now = new Date();
+    const selected = new Date(selectedDate);
 
-  return slots.map((slot) => {
-    let disabled = false;
+    return slots.map((slot) => {
+      let disabled = false;
 
-    if (selected.toDateString() === now.toDateString()) {
-      const currentHour = now.getHours();
+      if (selected.toDateString() === now.toDateString()) {
+        const currentHour = now.getHours();
 
-      if (slot === "09:00 AM - 12:00 PM" && currentHour >= 12) disabled = true;
-      if (slot === "12:00 PM - 03:00 PM" && currentHour >= 15) disabled = true;
-      if (slot === "03:00 PM - 06:00 PM" && currentHour >= 18) disabled = true;
-      if (slot === "06:00 PM - 09:00 PM" && currentHour >= 21) disabled = true;
-    }
+        if (slot === "09:00 AM - 12:00 PM" && currentHour >= 12) disabled = true;
+        if (slot === "12:00 PM - 03:00 PM" && currentHour >= 15) disabled = true;
+        if (slot === "03:00 PM - 06:00 PM" && currentHour >= 18) disabled = true;
+        if (slot === "06:00 PM - 09:00 PM" && currentHour >= 21) disabled = true;
+      }
 
-    return { slot, disabled };
-  });
-};
+      return { slot, disabled };
+    });
+  };
 
   // Auto-clear success message after 4s
   useEffect(() => {
@@ -115,7 +110,8 @@ const getSlotsWithAvailability = (selectedDate) => {
       if (res.ok && result?.success) {
         setStatus({
           type: "success",
-          message: "Appointment booked successfully ✅  We will contact you shortly.",
+          message:
+            "Appointment booked successfully ✅  We will contact you shortly.",
         });
         reset();
       } else {
@@ -159,16 +155,16 @@ const getSlotsWithAvailability = (selectedDate) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Form Section */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="bg-white rounded-2xl shadow-lg p-8 md:col-span-1 hover:shadow-xl transition duration-300"
+            className="bg-white rounded-2xl shadow-lg p-6 md:col-span-2 hover:shadow-xl transition duration-300 "
           >
-            <h3 className="font-semibold text-xl md:text-2xl mb-2">
+            <h3 className="font-semibold text-xl md:text-2xl mb-2 text-center">
               Book an <span className="text-blue-600">Appointment</span>
             </h3>
             <p className="text-gray-600 text-sm md:text-base mb-5">
@@ -234,7 +230,7 @@ const getSlotsWithAvailability = (selectedDate) => {
               </div>
 
               {/* Date + Time Slot */}
-              <div className="flex flex-col md:flex-row md:space-x-4 gap-4">
+              <div className="flex flex-col md:flex-row md:space-x-4 gap-2">
                 {/* Date Picker */}
                 <div className="flex-1 relative">
                   <input
@@ -243,7 +239,8 @@ const getSlotsWithAvailability = (selectedDate) => {
                     {...register("date", { required: true })}
                     aria-invalid={errors.date ? "true" : "false"}
                     ref={dateInputRef}
-                    className="w-full border rounded-lg px-4 py-3 text-base focus:ring-2 focus:ring-blue-500 outline-none transition"
+                    onChange={(e) => setValue("date", e.target.value)}
+                    className="w-full border rounded-lg px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 outline-none transition"
                   />
                   <CalendarDays
                     size={20}
@@ -251,32 +248,39 @@ const getSlotsWithAvailability = (selectedDate) => {
                     onClick={openDatePicker}
                   />
                   {errors.date && (
-                    <p className="text-red-500 text-xs mt-1">Please select a valid date</p>
+                    <p className="text-red-500 text-xs mt-1">
+                      Please select a valid date
+                    </p>
                   )}
                 </div>
 
                 {/* Time Slot Dropdown */}
                 <div className="flex-1 relative">
                   <select
-                    {...register("timeSlot", { required: true })}
-                    ref={timeSlotRef}
-                    className="w-full border rounded-lg px-4 py-3 text-base appearance-none focus:ring-2 focus:ring-blue-500 outline-none transition"
+                    {...register("timeSlot", { required: "Please select a time slot" })}
+                    defaultValue=""
+                    disabled={!watch("date")} // 👈 disabled until a date is chosen
+                    className="w-full border rounded-lg px-4 py-3 text-base appearance-none focus:ring-2 focus:ring-blue-500 outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
-                    <option value="">Select a time slot</option>
-                    {getSlotsWithAvailability(watch("date")).map(({ slot, disabled }) => (
-                      <option key={slot} value={slot} disabled={disabled}>
-                        {slot} {disabled ? "(Unavailable)" : ""}
-                      </option>
-                    ))}
+                    <option value="" disabled>
+                      {watch("date") ? "Select a time slot" : "Pick a date first"}
+                    </option>
+
+                    {watch("date") &&
+                      getSlotsWithAvailability(watch("date")).map(({ slot, disabled }) => (
+                        <option key={slot} value={slot} disabled={disabled}>
+                          {slot} {disabled ? "(Unavailable)" : ""}
+                        </option>
+                      ))}
                   </select>
 
                   <ChevronDown
                     size={20}
-                    className="absolute right-3 top-3 text-gray-400 cursor-pointer"
-                    onClick={openTimeSlot}
+                    className="absolute right-3 top-3 text-gray-400 pointer-events-none"
                   />
+
                   {errors.timeSlot && (
-                    <p className="text-red-500 text-xs mt-1">Please select a time slot</p>
+                    <p className="text-red-500 text-xs mt-1">{errors.timeSlot.message}</p>
                   )}
                 </div>
 
@@ -294,7 +298,10 @@ const getSlotsWithAvailability = (selectedDate) => {
                   <option>Follow-up</option>
                   <option>New symptoms</option>
                 </select>
-                <ChevronDown size={20} className="absolute right-3 top-3 text-gray-400" />
+                <ChevronDown
+                  size={20}
+                  className="absolute right-3 top-3 text-gray-400"
+                />
                 {errors.reason && (
                   <p className="text-red-500 text-xs mt-1">
                     Please select a reason
@@ -340,7 +347,7 @@ const getSlotsWithAvailability = (selectedDate) => {
             </AnimatePresence>
           </motion.div>
 
-          {/* Info Section */}
+          {/* Info Section (right side) */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}

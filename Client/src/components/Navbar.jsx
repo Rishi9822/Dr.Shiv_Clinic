@@ -31,7 +31,7 @@ const Navbar = () => {
                 {/* Left - Logo & Name */}
                 <div className="flex flex-col xs:flex-row xs:items-center space-y-0 xs:space-x-2">
                     <span className="text-base md:text-lg font-semibold text-blue-600">
-                        Dr. Shivkumar Patel
+                        Dr. Shiv Clinic
                     </span>
                     <span className="text-xs md:text-sm text-gray-500">
                         B.A.M.S., C.C.H.

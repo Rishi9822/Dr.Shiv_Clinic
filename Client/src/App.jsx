@@ -16,15 +16,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 
-// ✅ Protected Route wrapper
-const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/admin/login"; // redirect if not logged in
-    return null;
-  }
-  return children;
-};
+// ✅ NEW: import the dedicated ProtectedRoute
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
