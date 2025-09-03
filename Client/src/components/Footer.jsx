@@ -58,7 +58,7 @@ const Footer = () => {
                        
                     </ul>
                     <a
-                        href="#book"
+                        href="#bookappointment"
                         className="inline-block bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm md:text-base px-4 py-2 rounded-md transition"
                     >
                         Book Appointment
