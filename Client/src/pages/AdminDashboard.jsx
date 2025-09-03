@@ -8,10 +8,12 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/admin/login");
-  };
+ const handleLogout = () => {
+  sessionStorage.removeItem("adminToken");
+  localStorage.removeItem("token"); // in case older code used it
+  navigate("/admin/login", { replace: true });
+};
+
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
