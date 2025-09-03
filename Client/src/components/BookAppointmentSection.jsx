@@ -8,6 +8,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
 
 const BookAppointmentSection = () => {
   const {
@@ -21,6 +22,9 @@ const BookAppointmentSection = () => {
 
   const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(false);
+
+  // 👇 NEW state for schedule
+  const [schedule, setSchedule] = useState(null);
 
   const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
@@ -50,6 +54,26 @@ const BookAppointmentSection = () => {
     "03:00 PM - 06:00 PM",
     "06:00 PM - 09:00 PM",
   ];
+
+
+  // Check if a date is unavailable due to holiday or closed day
+  const isDateUnavailable = (date) => {
+    if (!schedule) return false;
+    const chosen = new Date(date).toDateString();
+
+    // Doctor's holiday dates
+    const isHoliday = schedule.holidayDates?.some(
+      (d) => new Date(d).toDateString() === chosen
+    );
+
+    // Doctor closed today
+    if (!schedule.isOpenToday && new Date().toDateString() === chosen) {
+      return true;
+    }
+
+    return isHoliday;
+  };
+
 
   const getSlotsWithAvailability = (selectedDate) => {
     const now = new Date();
@@ -81,7 +105,27 @@ const BookAppointmentSection = () => {
     }
   }, [status]);
 
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/schedule");
+        setSchedule(res.data);
+      } catch (err) {
+        console.error("Error fetching schedule:", err);
+      }
+    };
+    fetchSchedule();
+  }, []);
+
   const onSubmit = async (data) => {
+    if (isDateUnavailable(data.date)) {
+  setStatus({
+    type: "error",
+    message: "❌ Clinic is closed on this date. Please select another day.",
+  });
+  return;
+}
+
     try {
       setStatus({ type: "", message: "" });
       setLoading(true);
@@ -129,7 +173,7 @@ const BookAppointmentSection = () => {
   };
 
   return (
-    <section id="book" className="py-14 md:py-20 bg-[#f5fafc]">
+    <section id="bookappointment" className="py-14 md:py-20 bg-[#f5fafc]">
       <div className="max-w-7xl mx-auto px-4">
         {/* Heading */}
         <div className="text-center mb-10">
@@ -247,11 +291,16 @@ const BookAppointmentSection = () => {
                     className="absolute right-3 top-3 text-gray-400 cursor-pointer"
                     onClick={openDatePicker}
                   />
-                  {errors.date && (
+                  {/* Show red warning if date is unavailable */}
+                  {watch("date") && isDateUnavailable(watch("date")) && (
                     <p className="text-red-500 text-xs mt-1">
-                      Please select a valid date
+                      ❌ Clinic is closed on this date
                     </p>
                   )}
+                  {errors.date && !isDateUnavailable(watch("date")) && (
+                    <p className="text-red-500 text-xs mt-1">Please select a valid date</p>
+                  )}
+
                 </div>
 
                 {/* Time Slot Dropdown */}
@@ -259,11 +308,15 @@ const BookAppointmentSection = () => {
                   <select
                     {...register("timeSlot", { required: "Please select a time slot" })}
                     defaultValue=""
-                    disabled={!watch("date")} // 👈 disabled until a date is chosen
+                    disabled={!watch("date") || isDateUnavailable(watch("date"))}
                     className="w-full border rounded-lg px-4 py-3 text-base appearance-none focus:ring-2 focus:ring-blue-500 outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     <option value="" disabled>
-                      {watch("date") ? "Select a time slot" : "Pick a date first"}
+                      {watch("date")
+                        ? isDateUnavailable(watch("date"))
+                          ? "Clinic closed on this date"
+                          : "Select a time slot"
+                        : "Pick a date first"}
                     </option>
 
                     {watch("date") &&
@@ -273,6 +326,7 @@ const BookAppointmentSection = () => {
                         </option>
                       ))}
                   </select>
+
 
                   <ChevronDown
                     size={20}

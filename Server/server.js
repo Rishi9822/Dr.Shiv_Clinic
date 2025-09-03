@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import connectDB from "./config/setup.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import scheduleRoutes from "./routes/scheduleRoutes.js";
+
 
 dotenv.config(); // ✅ Load environment variables from .env
 
@@ -24,6 +26,9 @@ app.use(
 // ✅ API Routes
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/auth", authRoutes);
+
+app.use("/api/schedule", scheduleRoutes);
+
 
 // ✅ Health Check route
 app.get("/", (req, res) => {

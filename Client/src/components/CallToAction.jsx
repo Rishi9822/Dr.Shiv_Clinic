@@ -35,7 +35,7 @@ const CallToAction = () => {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <motion.a
-            href="#book"
+            href="#bookappointment"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
             className="flex items-center gap-2 px-6 py-3 text-white font-semibold border border-white rounded-full transition-all duration-300 hover:bg-white hover:text-[#0086c3] shadow-lg"

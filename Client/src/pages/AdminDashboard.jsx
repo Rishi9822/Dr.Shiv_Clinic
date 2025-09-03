@@ -3,17 +3,18 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import AdminPanel from "../components/AdminPanel";
+import SettingsPage from "../components/SettingsPage";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("appointments"); // 🔹 track section
 
- const handleLogout = () => {
-  sessionStorage.removeItem("adminToken");
-  localStorage.removeItem("token"); // in case older code used it
-  navigate("/admin/login", { replace: true });
-};
-
+  const handleLogout = () => {
+    sessionStorage.removeItem("adminToken");
+    localStorage.removeItem("token"); // in case older code used it
+    navigate("/admin/login", { replace: true });
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
@@ -62,27 +63,45 @@ const AdminDashboard = () => {
           </div>
 
           <nav className="flex flex-col p-6 space-y-4">
-            <a
-              href="#appointments"
-              className="text-gray-700 hover:text-green-700 font-medium transition"
-              onClick={() => setIsSidebarOpen(false)}
+            <button
+              onClick={() => {
+                setActiveSection("appointments");
+                setIsSidebarOpen(false);
+              }}
+              className={`text-left font-medium transition ${
+                activeSection === "appointments"
+                  ? "text-green-700"
+                  : "text-gray-700 hover:text-green-700"
+              }`}
             >
               📅 Appointments
-            </a>
-            <a
-              href="#patients"
-              className="text-gray-700 hover:text-green-700 font-medium transition"
-              onClick={() => setIsSidebarOpen(false)}
+            </button>
+            <button
+              onClick={() => {
+                setActiveSection("patients");
+                setIsSidebarOpen(false);
+              }}
+              className={`text-left font-medium transition ${
+                activeSection === "patients"
+                  ? "text-green-700"
+                  : "text-gray-700 hover:text-green-700"
+              }`}
             >
               👥 Patients
-            </a>
-            <a
-              href="#settings"
-              className="text-gray-700 hover:text-green-700 font-medium transition"
-              onClick={() => setIsSidebarOpen(false)}
+            </button>
+            <button
+              onClick={() => {
+                setActiveSection("settings");
+                setIsSidebarOpen(false);
+              }}
+              className={`text-left font-medium transition ${
+                activeSection === "settings"
+                  ? "text-green-700"
+                  : "text-gray-700 hover:text-green-700"
+              }`}
             >
               ⚙️ Settings
-            </a>
+            </button>
 
             {/* Logout button for mobile */}
             <button
@@ -96,14 +115,20 @@ const AdminDashboard = () => {
 
         {/* Main Content */}
         <main className="flex-1 p-6 overflow-y-auto">
-          <h2 className="text-3xl font-bold mb-6 text-gray-800">
-            Dashboard Overview
-          </h2>
+          {activeSection === "appointments" && (
+            <>
+              <h2 className="text-3xl font-bold mb-6 text-gray-800">
+                Dashboard Overview
+              </h2>
+              <AdminPanel />
+            </>
+          )}
 
-          {/* 📌 Appointments Table */}
-          <section id="appointments">
-            <AdminPanel />
-          </section>
+          {activeSection === "patients" && (
+            <h2 className="text-3xl font-bold text-gray-800">Patients Section</h2>
+          )}
+
+          {activeSection === "settings" && <SettingsPage />}
         </main>
       </div>
     </div>
