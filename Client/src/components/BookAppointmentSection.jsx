@@ -437,7 +437,6 @@ const BookAppointmentSection = () => {
                   "Personalized treatment plans",
                   "Comprehensive health assessments",
                   "Follow-up care included",
-                  "Insurance claims assistance",
                   "Patient-centered approach",
                 ].map((item, idx) => (
                   <motion.li
