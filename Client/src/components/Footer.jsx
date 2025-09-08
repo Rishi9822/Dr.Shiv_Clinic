@@ -9,7 +9,7 @@ const Footer = () => {
                 {/* Left - About */}
                 <div>
                     <h2 className="text-lg md:text-xl font-semibold text-white mb-2">Dr. Shivkumar Patel</h2>
-                    <p className="text-sm md:text-base font-semibold mb-1">B.A.M.S., C.C.H.</p>
+                    <p className="text-sm md:text-base font-semibold mb-1">B.A.M.S., C.C.H, M.D</p>
                     <p className="text-xs md:text-sm mb-3">General & Family Physician</p>
                     <p className="text-xs md:text-sm mb-4">
                         Providing comprehensive, compassionate healthcare to families in Nagpur with over 10 years of medical expertise.

@@ -57,7 +57,7 @@ const Navbar = () => {
             Dr. Shiv Clinic
           </span>
           <span className="text-xs md:text-sm text-gray-500 font-medium">
-            B.A.M.S., C.C.H.
+            B.A.M.S., C.C.H, M.D
           </span>
         </div>
 
