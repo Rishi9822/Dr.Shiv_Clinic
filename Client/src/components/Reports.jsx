@@ -121,8 +121,8 @@ const Reports = () => {
 
         doc.setFontSize(12);
         doc.setFont("helvetica", "normal");
-        doc.text("Dr. Shiv Patel (MBBS, MD)", 40, 26);
-        doc.text("Ganganagar Katol Road, Nagpur", 40, 32);
+        doc.text("Dr. Shiv Patel (BAMS, MD, CCH)", 40, 26);
+        doc.text("Gurudatta Society Wadi, Nagpur", 40, 32);
         doc.text("+91 9876543210    clinic@example.com", 40, 38);
 
         // Line separator
