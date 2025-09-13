@@ -284,6 +284,7 @@ const BookAppointmentSection = () => {
                     aria-invalid={errors.date ? "true" : "false"}
                     ref={dateInputRef}
                     onChange={(e) => setValue("date", e.target.value)}
+                    onKeyDown={(e) => e.preventDefault()}
                     className="w-full border rounded-lg px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 outline-none transition"
                   />
                   <CalendarDays

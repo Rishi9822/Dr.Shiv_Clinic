@@ -1,20 +1,55 @@
 // src/components/ProtectedRoute.jsx
-import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+
+const BACKEND_URL = "http://localhost:5000"; // ✅ your backend URL
 
 const ProtectedRoute = ({ children }) => {
-  const location = useLocation();
+  const [isAuth, setIsAuth] = useState(null); // null = loading, true/false = result
 
-  // Only accept the admin token stored in sessionStorage under a dedicated key.
-  const token = sessionStorage.getItem("adminToken");
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/auth/check`, {
+          credentials: "include", // ✅ send cookies
+        });
 
-  if (!token) {
-    // Not logged in — redirect to login and save where they wanted to go
-    return <Navigate to="/admin/login" replace state={{ from: location }} />;
+        if (!res.ok) {
+          // Backend returned 401/other → not authorized
+          setIsAuth(false);
+          return;
+        }
+
+        let data;
+        try {
+          data = await res.json(); // try parsing JSON
+        } catch (err) {
+          console.error("Failed to parse JSON from /auth/check:", err);
+          setIsAuth(false);
+          return;
+        }
+
+        setIsAuth(data.success === true);
+      } catch (err) {
+        console.error("Auth check failed:", err);
+        setIsAuth(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  // While checking → show loader
+  if (isAuth === null) {
+    return (
+      <div className="text-center p-10 text-gray-700 font-semibold">
+        Checking authentication...
+      </div>
+    );
   }
 
-  // Logged in — show children
-  return children;
+  // If authenticated → render children, else redirect to login
+  return isAuth ? children : <Navigate to="/admin/login" replace />;
 };
 
 export default ProtectedRoute;

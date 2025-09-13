@@ -46,7 +46,7 @@ const HeroSection = () => {
 
           <p className="text-lg font-semibold mt-4">Dr. Shivkumar Patel</p>
           <p className="text-sm font-medium text-gray-200 mb-3">
-            <span className="font-bold">B.A.M.S, C.C.H.</span> • General & Family
+            <span className="font-bold">B.A.M.S, C.C.H, M.D</span> • General & Family
             Physician
           </p>
           <p className="text-sm text-gray-200 mb-5">

@@ -43,16 +43,6 @@ const CallToAction = () => {
             <Calendar className="w-5 h-5" />
             Book Appointment Now
           </motion.a>
-
-          <motion.a
-            href="tel:9850318850"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-2 px-6 py-3 bg-white text-[#0086c3] font-semibold rounded-full shadow-lg transition-all duration-300 hover:opacity-90"
-          >
-            <PhoneCall className="w-5 h-5" />
-            Call: 9850318850
-          </motion.a>
         </div>
       </motion.div>
     </section>

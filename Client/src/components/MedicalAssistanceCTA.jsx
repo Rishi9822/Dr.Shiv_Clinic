@@ -23,17 +23,6 @@ const MedicalAssistanceCTA = () => {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
-            href="tel:9850318850"
-            className="
-              inline-flex items-center justify-center gap-1 border border-white 
-              rounded-full px-4 py-2 text-xs md:text-sm font-semibold
-              hover:bg-white hover:text-sky-600 
-              transition duration-300 transform hover:scale-105
-            "
-          >
-            <PhoneCall size={16} /> EMERGENCY: 9850318850
-          </a>
-          <a
             href="#bookappointment"
             className="
               inline-flex items-center justify-center gap-1 bg-cyan-600 

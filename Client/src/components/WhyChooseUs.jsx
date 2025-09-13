@@ -28,7 +28,7 @@ const features = [
     icon: <BadgeCheck size={32} className="text-white" />,
     title: "Certified Expertise",
     description:
-      "B.A.M.S. and C.C.H. qualified with 10+ years experience",
+      "B.A.M.S. and C.C.H, M.D qualified with 10+ years experience",
     bgColor: "bg-[#0086AD]",
   },
 ];

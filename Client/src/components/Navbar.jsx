@@ -57,7 +57,7 @@ const Navbar = () => {
             Dr. Shiv Clinic
           </span>
           <span className="text-xs md:text-sm text-gray-500 font-medium">
-            B.A.M.S., C.C.H.
+            B.A.M.S., C.C.H, M.D
           </span>
         </div>
 
@@ -83,7 +83,7 @@ const Navbar = () => {
               className={`px-3 py-1 rounded-full text-xs sm:text-sm font-semibold shadow-sm transition 
                 ${
                   clinicStatus === "Open"
-                    ? "bg-green-100 text-green-700 animate-pulse"
+                    ? "bg-green-100 text-green-700"
                     : "bg-red-100 text-red-700"
                 }`}
             >
