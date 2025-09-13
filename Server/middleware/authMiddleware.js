@@ -1,11 +1,16 @@
-import { ADMIN } from "../config/adminConfig.js";
+import jwt from "jsonwebtoken";
 
-export const verifyHardcodedAuth = (req, res, next) => {
-  const { username, password } = req.headers;
+export const verifyAdminAuth = (req, res, next) => {
+  const token = req.cookies?.token;
+  if (!token) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
 
-  if (username === ADMIN.username && password === ADMIN.password) {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
     next();
-  } else {
-    res.status(401).json({ error: "Unauthorized" });
+  } catch {
+    return res.status(401).json({ success: false, message: "Invalid or expired token" });
   }
 };

@@ -2,33 +2,39 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import cookieParser from "cookie-parser";
+
 import connectDB from "./config/setup.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import scheduleRoutes from "./routes/scheduleRoutes.js";
 
-
 dotenv.config(); // ✅ Load environment variables from .env
+
+// console.log("ADMIN_USER:", process.env.ADMIN_USER);
+// console.log("ADMIN_PASS:", process.env.ADMIN_PASS);
+
 
 const app = express();
 
-// ✅ Middleware
+// ✅ Security & Middleware
+app.use(helmet()); // Secure HTTP headers
 app.use(express.json()); // Parse JSON bodies
+app.use(cookieParser()); // Parse cookies for JWT auth
 
 app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:5173", // Allow frontend
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
+    credentials: true, // allow cookies
   })
 );
 
 // ✅ API Routes
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/auth", authRoutes);
-
 app.use("/api/schedule", scheduleRoutes);
-
 
 // ✅ Health Check route
 app.get("/", (req, res) => {
@@ -42,7 +48,6 @@ app.get("/", (req, res) => {
 app.use((err, req, res, next) => {
   console.error("🔥 Server Error:", err.message || err.stack);
 
-  // If response not already set, send generic error
   if (!res.headersSent) {
     res.status(res.statusCode === 200 ? 500 : res.statusCode).json({
       success: false,
